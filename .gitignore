@@ -8,6 +8,22 @@
 *.so
 *.dylib
 
+# go binary
+blog_aggregator
+
+# environment variables
+.env
+
+# task list 
+task.md
+
+# vscode settings
+.vscode/
+
+
+
+
+
 # Test binary, built with `go test -c`
 *.test
 
