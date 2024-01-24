@@ -20,6 +20,11 @@ type apiConfig struct {
 func main() {
 	godotenv.Load(".env")
 
+	portString := os.Getenv("PORT")
+	if portString == "" {
+		log.Fatal("DB_URL is not found in the environment")
+	}
+
 	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
 		log.Fatal("DB_URL is not found in the environment")
@@ -49,6 +54,7 @@ func main() {
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/err", handlerErr)
 	v1Router.Post("/users", apiCfg.handleCreateUser)
+	v1Router.Get("/users", apiCfg.handleGetUser)
 
 	router.Mount("/v1", v1Router)
 
@@ -58,7 +64,7 @@ func main() {
 	}
 
 	log.Printf("server starting on port %v", portString)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
