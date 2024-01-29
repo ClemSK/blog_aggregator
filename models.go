@@ -81,3 +81,40 @@ func databaseFeedFollowsToFeedFollows(dbFeedFollows []database.FeedFollow) []Fee
 
 	return feedFollows
 }
+
+type Post struct {
+	ID          uuid.UUID `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"update_at"`
+	Title       string    `json:"title"`
+	Description *string   `json:"description"` // using a pointer to a string means that it will default to a null value if needed
+	PublishedAt time.Time `json:"published_at"`
+	Url         string    `json:"url"`
+	FeedID      uuid.UUID `json:"feed_id"`
+}
+
+func databasePostToPost(dbPost database.Post) Post {
+	var description *string
+	if dbPost.Description.Valid {
+		description = &dbPost.Description.String
+	}
+
+	return Post{
+		ID:          dbPost.ID,
+		CreatedAt:   dbPost.CreatedAt,
+		UpdatedAt:   dbPost.UpdatedAt,
+		Title:       dbPost.Title,
+		Description: description,
+		PublishedAt: dbPost.PublishedAt,
+		Url:         dbPost.Url,
+		FeedID:      dbPost.FeedID,
+	}
+}
+
+func databasePoststoPosts(dbPosts []database.Post) []Post {
+	posts := []Post{}
+	for _, dbPost := range dbPosts {
+		posts = append(posts, databasePostToPost(dbPost))
+	}
+	return posts
+}
