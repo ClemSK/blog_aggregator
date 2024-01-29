@@ -45,18 +45,18 @@ func scrapeFeeds(db *database.Queries, waitGroup *sync.WaitGroup, feed database.
 
 	_, err := db.MarkFeedAsFetched(context.Background(), feed.ID)
 	if err != nil {
-		log.Panicln("Error marking feed as fetched: ", err)
+		log.Println("Error marking feed as fetched: ", err)
 		return
 	}
 
 	rssFeed, err := urlToFeed(feed.Url)
 	if err != nil {
-		log.Panicln("Error fetching feed: ", err)
+		log.Println("Error fetching feed: ", err)
 		return
 	}
 
 	for _, item := range rssFeed.Channel.Item {
-		log.Panicln("Found post: ", item.Title, "on feed ", feed.Name)
+		log.Println("Found post: ", item.Title, "on feed ", feed.Name)
 	}
-	log.Println("Feed %s collected, %v posts found", feed.Name, len(rssFeed.Channel.Item))
+	log.Printf("Feed %s collected, %v posts found", feed.Name, len(rssFeed.Channel.Item))
 }
