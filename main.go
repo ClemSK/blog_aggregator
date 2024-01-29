@@ -2,10 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/ClemSK/blog_aggregator/internal/database"
 	"github.com/go-chi/chi/v5"
@@ -19,12 +19,13 @@ type apiConfig struct {
 }
 
 func main() {
+	/* -- The section below grabs a feed and prints it out to the console  --
 	feed, err := urlToFeed("https://wagslane.dev/index.xml")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	fmt.Println(feed)
+	*/
 
 	godotenv.Load(".env")
 
@@ -43,9 +44,12 @@ func main() {
 		log.Fatal("Cannot connect to database")
 	}
 
+	db := database.New(connection)
 	apiCfg := apiConfig{
-		DB: database.New(connection),
+		DB: db,
 	}
+
+	go startScraping(db, 10, time.Minute) // db, num of concurrent connections, interval
 
 	router := chi.NewRouter()
 
